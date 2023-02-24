@@ -219,17 +219,21 @@ const T& Conjunto<T>::minimo() const {
 
 template <class T>
 const T& Conjunto<T>::maximo() const {
-    assert(false);
+    Nodo* nodo_actual = _raiz;
+    while (nodo_actual->der !=  nullptr) {
+        nodo_actual = nodo_actual->der;
+    }
+    return nodo_actual->valor;
 }
 
 template <class T>
 unsigned int Conjunto<T>::cardinal() const {
-    assert(false);
-    return 0;
+    return cantNodos;
 }
 
 template <class T>
 void Conjunto<T>::mostrar(std::ostream&) const {
     assert(false);
 }
+
 
