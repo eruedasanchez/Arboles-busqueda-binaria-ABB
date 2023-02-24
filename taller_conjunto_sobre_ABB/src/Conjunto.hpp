@@ -50,7 +50,6 @@ bool Conjunto<T>::pertenece(const T& clave) const {
     /** Salgo del ciclo porque no hay mas elementos del ABB por recorrer. Por lo tanto, no encontre a clave */
     delete nodo_actual;
     return false;
-    // assert(false);
 }
 
 template <class T>
@@ -96,22 +95,126 @@ void Conjunto<T>::insertar(const T& clave) {
             }
         }
     }
-    //assert(false);
 }
 
 template <class T>
-void Conjunto<T>::remover(const T&) {
-    assert(false);
+const T& Conjunto<T>::minimo_version_nodo(Nodo* r) const {
+    Nodo* nodo_actual = r;
+    while (nodo_actual->izq != nullptr) {
+        nodo_actual = nodo_actual->izq;
+    }
+    return nodo_actual->valor;
 }
 
 template <class T>
-const T& Conjunto<T>::siguiente(const T& clave) {
-    assert(false);
+const T& Conjunto<T>::maximo_version_nodo(Nodo* r) const {
+    Nodo* nodo_actual = r;
+    while (nodo_actual->der != nullptr) {
+        nodo_actual = nodo_actual->der;
+    }
+    return nodo_actual->valor;
+}
+
+template <class T>
+void Conjunto<T>::remover(const T& clave) {
+    if(!pertenece(clave) || _raiz == nullptr){
+        /** Caso 1: El nodo que contiene a clave no se encuentra en el ABB o el ABB es nil. NO se modifica nada */
+        return;
+    }
+    if(cardinal() == 1) {
+        /** Caso 2: El ABB tiene un solo elemento y como no ingreso al if anterior (caso 1), se elimina la raiz */
+        delete _raiz;
+        _raiz = nullptr;
+        cantNodos--;
+        return;
+    }
+    /** Caso 3: La clave se encuentra en el ABB y el arbol tiene mas de un elemento */
+    Nodo* nodo_actual = _raiz;
+    string direccion = "";
+    /** Se busca el nodo a remover */
+    while(nodo_actual->valor != clave) {
+        if (nodo_actual->valor < clave) {
+            nodo_actual = nodo_actual->der;
+            direccion = "DER";
+        } else {
+            nodo_actual = nodo_actual->izq;
+            direccion = "IZQ";
+        }
+    }
+
+    /** Una vez que se sale del ciclo pueden suceder dos cosas.
+     * La primera es haber recorrido todo el arbol y por lo tanto, la clave a borrar no se encuentra en el ABB  y no modifico el ABB.
+     * La segunda es haber salido del ciclo porque se encontro el nodo que contiene a clave.
+     * Entonces, se analizan los siguientes casos: */
+    if (nodo_actual->valor == clave) {
+        /** Se encontro el nodo que contiene a clave */
+        if (nodo_actual->izq == nullptr && nodo_actual->der == nullptr) {
+            /** Caso 4.a: El nodo a borrar es una hoja */
+            if (direccion == "DER"){
+                nodo_actual->padre->der = nullptr;
+            }
+            if (direccion == "IZQ"){
+                nodo_actual->padre->izq = nullptr;
+            }
+            delete nodo_actual;
+            cantNodos--;
+        } else {
+            if(nodo_actual->der != nullptr) {
+                /** Caso 4.b: El nodo a borrar tiene un solo hijo derecho o dos hijos */
+                T predecesor_inmediato = minimo_version_nodo(nodo_actual->der);
+                remover(predecesor_inmediato);
+                nodo_actual->valor = predecesor_inmediato;
+            } else {
+                /** Caso 4.c: El nodo a borrar tiene un solo hijo izquierdo */
+                T sucesor_inmediato = maximo_version_nodo(nodo_actual->izq);
+                remover(sucesor_inmediato);
+                nodo_actual->valor = sucesor_inmediato;
+            }
+        }
+    }
+}
+
+template <class T>
+const T& Conjunto<T>::siguiente(const T& elem) {
+    /** Pre: La clave se encuentra en el ABB y tiene un elemento siguiente */
+    if(!pertenece(elem)){
+        assert(false);
+    }
+    Nodo* nodo_actual = _raiz;
+    /** Se busca el nodo que contiene a clave en el ABB */
+    while(nodo_actual->valor != elem) {
+        if (nodo_actual->valor < elem) {
+            nodo_actual = nodo_actual->der;
+        } else {
+            nodo_actual = nodo_actual->izq;
+        }
+    }
+    /** Caso 1: Una vez que se encontro el nodo que contiene a clave en el ABB, como es el siguiente, se encuentra
+     * en el subarbol derecho y sera el nodo mas a la izquierda de este */
+    if(nodo_actual->der != nullptr) {
+        nodo_actual = nodo_actual->der;
+        while (nodo_actual->izq != nullptr) {
+            nodo_actual = nodo_actual->izq;
+        }
+        return nodo_actual->valor;
+    }
+    /** Caso 2: Una vez que se encuentra el nodo que contiene a clave en el ABB, como no tiene hijo derecho, hoy que ir avanzando
+     * hacia arriba hasta que el nodo actual sea una hoja o llegue a la raiz */
+    Nodo* father = nodo_actual->padre;
+    while(father != nullptr && nodo_actual == father->der) {
+        nodo_actual = father;
+        father = nodo_actual->padre;
+    }
+    return father->valor;
 }
 
 template <class T>
 const T& Conjunto<T>::minimo() const {
-    assert(false);
+    Nodo* nodo_actual = _raiz;
+    while (nodo_actual->izq != nullptr){
+        nodo_actual = nodo_actual->izq;
+    }
+    return nodo_actual->valor;
 }
 
 template <class T>
