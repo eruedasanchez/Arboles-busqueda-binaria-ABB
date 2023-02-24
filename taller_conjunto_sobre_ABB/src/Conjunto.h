@@ -65,6 +65,17 @@ class Conjunto
         // Puntero a la raíz de nuestro árbol.
         Nodo* _raiz;
 
+        // Funcion que indica la cantidad de nodos en el ABB
+        int cantNodos;
+
+        // Funcion que aplico en el destructor para eliminar cada nodo
+        void destruir(Nodo* r);
+
+        // Funcion que calcula el predecesor inemediato de un nodo
+        const T& minimo_version_nodo(Nodo* r) const;
+
+        // Funcion que calcula el sucesor inemediato de un nodo
+        const T& maximo_version_nodo(Nodo* r) const;
 };
 
 template<class T>
