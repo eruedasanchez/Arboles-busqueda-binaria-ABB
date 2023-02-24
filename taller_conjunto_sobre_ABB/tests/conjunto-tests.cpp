@@ -189,3 +189,6 @@ TEST(conjunto_test, test_stress) {
 	    ASSERT_FALSE(c.pertenece(k));
     }
 }
+
+/** Todos los casos de tests funcionan correctamente **/
+
