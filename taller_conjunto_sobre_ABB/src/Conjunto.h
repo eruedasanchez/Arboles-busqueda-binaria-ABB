@@ -27,7 +27,7 @@ class Conjunto
 
         // Borra un elemento del conjunto. Si este no existe,
         // el conjunto no se modifica.
-        void remover(const T&);
+        void remover(const T& clave);
 
         // Siguiente elemento al recibido por párametro, en orden.
         const T& siguiente(const T& elem);
